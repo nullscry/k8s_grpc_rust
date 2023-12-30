@@ -37,6 +37,7 @@ We send the certificate and the key, and configure the ingress so it can access 
 ```sh
 kubectl create secret tls mkcert --key tls.key --cert tls.crt
 minikube addons configure ingress
+    -- Enter custom cert (format is "namespace/secret"): default/mkcert
 minikube addons disable ingress
 minikube addons enable ingress
 ```
