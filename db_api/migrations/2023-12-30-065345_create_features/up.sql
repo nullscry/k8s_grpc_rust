@@ -1,0 +1,6 @@
+CREATE TABLE features (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    category VARCHAR NOT NULL,
+    model VARCHAR NOT NULL
+)

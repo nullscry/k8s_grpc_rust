@@ -1,0 +1,17 @@
+syntax = "proto3";
+package numbers;
+
+service Calculate {
+    rpc AddNumbers (NumbersRequest) returns (NumbersReply);
+
+    rpc MultNumbers (NumbersRequest) returns (NumbersReply);
+}
+
+message NumbersRequest {
+    float lhs = 1;
+    float rhs = 2;
+}
+
+message NumbersReply {
+    float result = 1;
+}

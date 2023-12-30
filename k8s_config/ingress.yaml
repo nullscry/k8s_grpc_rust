@@ -1,0 +1,54 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/enable-http2: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    # nginx.ingress.kubernetes.io/use-regex: "true"
+  name: my-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: smartmodels.local
+      http:
+        paths:
+        - path: /clock.Clock/
+          pathType: Prefix
+          backend:
+            service:
+              name: clock-service
+              port:
+                number: 80
+        - path: /numbers.Calculate/
+          pathType: Prefix
+          backend:
+            service:
+              name: numbers-service
+              port:
+                number: 80
+        - path: /dbapi.Database/
+          pathType: Prefix
+          backend:
+            service:
+              name: dbapi-service
+              port:
+                number: 80
+  tls:
+  - secretName: mkcert
+    hosts:
+      - smartmodels.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-controller
+spec:
+  selector:
+    app: my-ingress
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort

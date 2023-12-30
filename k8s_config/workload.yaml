@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clock-service-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: clock-service
+  template:
+    metadata:
+      labels:
+        app: clock-service
+    spec:
+      containers:
+        - name: clock-service
+          image: clock_image
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 8888
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: numbers-service-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: numbers-service
+  template:
+    metadata:
+      labels:
+        app: numbers-service
+    spec:
+      containers:
+        - name: numbers-service
+          image: numbers_image
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 8888
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbapi-service-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dbapi-service
+  template:
+    metadata:
+      labels:
+        app: dbapi-service
+    spec:
+      initContainers:
+      - name: check-db-ready
+        image: postgres:16
+        command: ['sh', '-c',
+          'until pg_isready -h postgres -p 5432;
+          do echo waiting for database; sleep 2; done;']
+      containers:
+        - name: dbapi-service
+          image: dbapi_image
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8888
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-statefulset
+spec:
+  serviceName: "postgres"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16
+          env:
+          - name: POSTGRES_PASSWORD
+            value: trux
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "standard"
+        resources:
+          requests:
+            storage: 1Gi

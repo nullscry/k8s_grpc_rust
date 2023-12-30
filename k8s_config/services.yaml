@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clock-service
+spec:
+  selector:
+    app: clock-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: numbers-service
+spec:
+  selector:
+    app: numbers-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dbapi-service
+spec:
+  selector:
+    app: dbapi-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8888
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

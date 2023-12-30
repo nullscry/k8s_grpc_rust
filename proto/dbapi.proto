@@ -1,0 +1,58 @@
+syntax = "proto3";
+package dbapi;
+
+service Database {
+    rpc InsertModel (InsertModelRequest) returns (InsertReply);
+    rpc InsertFeature (InsertFeatureRequest) returns (InsertReply);
+    rpc SelectModel (SelectModelRequest) returns (SelectModelReply);
+    rpc SelectFeature (SelectFeatureRequest) returns (SelectFeatureReply);
+}
+
+message InsertReply {
+    string status = 1;
+}
+
+message InsertModelRequest {
+    string name = 1;
+    string category = 2;
+}
+
+message InsertFeatureRequest {
+    string name = 1;
+    string category = 2;
+    string model = 3;
+}
+
+message SelectModelRequest {
+    int32 id = 1;
+    string name = 2;
+    string category = 3;
+}
+
+message SelectFeatureRequest {
+    int32 id = 1;
+    string name = 2;
+    string category = 3;
+    string model = 4;
+}
+
+message SelectModelReply {
+    message ModelRow {
+        int32 id = 1;
+        string name = 2;
+        string category = 3;
+    }
+
+    repeated ModelRow models = 1;
+}
+
+message SelectFeatureReply {
+    message FeatureRow {
+        int32 id = 1;
+        string name = 2;
+        string category = 3;
+        string model = 4;
+    }
+
+    repeated FeatureRow features = 1;
+}
